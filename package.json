@@ -3,9 +3,6 @@
   "version": "0.1.1",
   "description": "Pure JS based collapsible toolbar for react native on Android and iOS",
   "main": "src/index.js",
-  "scripts": {
-    "precommit": "lint-staged"
-  },
   "keywords": [
     "react-native",
     "react",
