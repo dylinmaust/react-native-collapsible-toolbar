@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
-import { Animated, Image, Platform, StatusBar, StyleSheet, View } from 'react-native';
+import { Animated, Dimensions, Image, Platform, StatusBar, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 
 const DEFAULT_TOOLBAR_HEIGHT = 300;
 
+const isIphoneX = () => {
+    let d = Dimensions.get("window");
+    const { height, width } = d;
+    const result = height === 812 ? 74 : 44;
+    return result;
+};
+
 export default class CollapsibleToolbar extends Component {
     static propTypes = {
         collapsedNavBarBackgroundColor: PropTypes.string,
-        imageSource: PropTypes.string,
+        imageSource: Image.propTypes.source,
+        imageFileSource: PropTypes.string,
         onContentScroll: PropTypes.func,
         renderContent: PropTypes.func.isRequired,
         renderNavBar: PropTypes.func.isRequired,
@@ -19,6 +27,7 @@ export default class CollapsibleToolbar extends Component {
     static defaultProps = {
         collapsedNavBarBackgroundColor: '#FFF',
         imageSource: '',
+        imageFileSource: undefined,
         onContentScroll: undefined,
         renderToolBar: undefined,
         toolBarHeight: DEFAULT_TOOLBAR_HEIGHT,
@@ -28,7 +37,7 @@ export default class CollapsibleToolbar extends Component {
     constructor(props) {
         super(props);
 
-        const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
+        const APPBAR_HEIGHT = Platform.OS === "ios" ? isIphoneX() : 56;
         const ANDROID_STATUS_BAR_HEIGHT = props.translucentStatusBar ? StatusBar.currentHeight : 0;
 
         this.statusBarHeight = Platform.OS === 'ios' ? 20 : ANDROID_STATUS_BAR_HEIGHT;
@@ -65,6 +74,7 @@ export default class CollapsibleToolbar extends Component {
         const {
             collapsedNavBarBackgroundColor,
             imageSource,
+            imageFileSource,
             onContentScroll,
             renderContent,
             renderNavBar,
@@ -73,7 +83,7 @@ export default class CollapsibleToolbar extends Component {
             ...props
         } = this.props;
 
-        if (!renderToolBar && !imageSource) {
+        if (!renderToolBar && !imageSource && !imageFileSource) {
             // eslint-disable-next-line no-console
             console.error('Either an image source or a custom toolbar component must be provided');
         }
@@ -106,7 +116,7 @@ export default class CollapsibleToolbar extends Component {
                         {renderToolBar
                             ? renderToolBar()
                             : <Image
-                                source={{ uri: imageSource || '' }}
+                                source={{ uri: imageSource || imageFileSource || '' }}
                                 style={{ height: toolBarHeight }}
                             />
                         }
