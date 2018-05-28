@@ -6,7 +6,7 @@ const DEFAULT_TOOLBAR_HEIGHT = 300;
 
 const isIphoneX = () => {
     const d = Dimensions.get('window');
-    const { height, width } = d;
+    const { height } = d;
     const result = height === 812 ? 74 : 44;
     return result;
 };
